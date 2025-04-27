@@ -56,7 +56,9 @@ const loginUser = async (req, res, next) => {
             return res.status(409).json({ error: true, message: "invaild username or password" })
         }
 
-        let token = jwt.sign({ _id: isUser._id }, process.env.JWT_PASSWORD, { expiresIn: "300m" })
+        let token = jwt.sign({ _id: isUser._id }, process.env.JWT_PASSWORD, { expiresIn: "24h" })
+
+        res.cookie('token', token)
         res.status(201).json({ error: false, message: "user login successfully", data: isUser, token })
 
     } catch (error) {
@@ -82,21 +84,24 @@ const getProfile = async (req, res, next) => {
     }
 }
 
-// const logoutUser = async(req, res, next)=>{
-//     try {
-//         const token =  req.headers.authorization.split(' ')[1];
+const logoutUser = async(req, res, next)=>{
+    try {
+        res.clearCookie('token');
+        
+        const token = req.cookies.token || req.headers.authorization.split(' ')[1];
 
-//         await blacklistTokenModel.create({token});
+        await blacklistTokenModel.create({token});
 
-//         res.status(200).json({message:'Logged out'})
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
+        res.status(200).json({message:'Logged out'})
+    } catch (error) {
+        console.log(error)
+        next()
+    }
+}
 
 module.exports = {
     registerUser,
     loginUser,
     getProfile,
-    // logoutUser
+    logoutUser
 }
