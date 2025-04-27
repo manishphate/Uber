@@ -6,7 +6,8 @@ const app=express();
 const ConnectToDB = require('./db/db')
 const cookieParser = require('cookie-parser')
 
-const router = require('./routes/user.route.js')
+const userRouter = require('./routes/user.route.js')
+const captainRouter = require('./routes/captain.route.js')
 
 app.use(cors())
 app.use(express.json());
@@ -18,7 +19,8 @@ app.get('/',(req, res)=>{
     res.send("Hello world")
 })
 
-app.use('/users',router)
+app.use('/users',userRouter)
+app.use('/captains',captainRouter)
 
 
 module.exports= app;

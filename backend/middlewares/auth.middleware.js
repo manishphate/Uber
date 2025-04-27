@@ -5,7 +5,7 @@ const blacklistTokenModel = require('../models/blacklistToken.model')
 const Auth = async (req, res, next) => {
 
     try {
-        let token = req.cookies.token || req.headers.authorization?.split(" ")[1]
+        let token = req.cookies.token || req.headers.authorization
 
         if (!token) {
             return res.status(401).json({ error: true, message: "invalid user" })
@@ -20,7 +20,7 @@ const Auth = async (req, res, next) => {
 
         if(token && token.startsWith("Bearer"))
             {
-                // token = token.split(" ")[1]
+                token = token.split(" ")[1]
     
                 let decodedData = jwt.verify(token, "123");
                 // console.log(decodedData);
